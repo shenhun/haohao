@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <title></title>
+    <style>
+        body{
+            font:12px;
+        }
+        #calc{
+            position:absolute;
+            left:50%;
+            top:30%;
+            margin:-161px 0 0 -120px;
+            width:230px;
+            background-color:#C4D2E0;
+            padding:3px;
+        }
+        #display{
+            width:230px;
+            height:60px;
+            background-color:#808080;
+        }
+        #display #top, #display #bottom{
+            height:20px;
+            padding:0 5px;
+            text-align:right;
+            font:14px;
+        }
+        #display #top .countSize{
+            padding:0 5px;
+        }
+        #display #bottom{
+            height:40px;
+            font:bold 20px "Arial";
+        }
+        #buttons{
+            width:230px;
+            text-align:center;
+        }
+        #buttons input{
+            float:left;
+            display:block;
+            width:50px;
+            overflow:hidden;
+        }
+        #buttons #num{
+            float:left;
+            width:160px;
+            overflow:hidden;
+        }
+        #buttons #num input{
+            height:40px;
+            margin:3px 3px 0 0;
+        }
+        #buttons #math{
+            float:left;
+            width:70px;
+            overflow:hidden;
+        }
+        #buttons #math input{
+            width:70px;
+            height:32px;
+            margin:3px 0 0 0;
+        }
+        #buttons #math input#equal{
+            height:30px;
+        }
+        #num input{
+        background:url(img/f.jpg) no-repeat;
+        width:50px;
+        height:35px;
+        }
+        #math input {
+        background:url(img/f.jpg) no-repeat;
+        width:40px;
+        height:35px;
+        }
+        input{
+            outline: none;
+            cursor: pointer;
+        }
+    </style>
+    <script src='../jquery-3.1.1.js'></script>
+</head>
+<body>
+    <div id="calc" style="margin-top:20px">
+	<div id="display">
+		<div id="top"></div>
+		<div id="bottom">0</div>
+	</div>
+	<div id="buttons">
+		<div id="num">
+			<input type="button" value="7" class="num" id="seven" />
+			<input type="button" value="8" class="num" id="eight" />
+			<input type="button" value="9" class="num" id="nine" />
+			<input type="button" value="4" class="num" id="four" />
+			<input type="button" value="5" class="num" id="five" />
+			<input type="button" value="6" class="num" id="six" />
+			<input type="button" value="1" class="num" id="one" />
+			<input type="button" value="2" class="num" id="two" />
+			<input type="button" value="3" class="num" id="three" />
+			<input type="button" value="MC" class="clearDisplay" id="clearDisplay" />
+			<input type="button" value="0" class="num" id="zero" />
+			<input type="button" value="." class="num" id="point" />
+		</div>
+		<div id="math">
+			<input type="button" value="/" class="math" id="chu" />
+			<input type="button" value="*" class="math" id="cheng" />
+			<input type="button" value="-" class="math" id="jian" />    
+            <input type="button" value="+" class="math" id="jia" />
+			<input type="button" value="=" class="equal" id="equal" />
+		</div>
+	</div>
+</div>
+    
+    <script>
+        $(function(){
+            //给.num的按钮绑定一个点击事件
+            $('.num').on('click',function(){
+                var vall=$(this).val();
+                var cur=$('#bottom').text();
+            //判断，如果是零的时候，无法点击
+                if(cur=='0'){
+            //如果是点的时候，直接追加到后边
+                    if(vall=='.'){
+                        $('#bottom').append(vall)
+                    }else{
+            //否则替换
+                        $('#bottom').text(vall);
+                    }
+                }else if(cur.indexOf(".")>-1){
+            //如果里边不是点的时候就追加到后边
+                    if(vall!='.')$('#bottom').append(vall);
+                }else{
+            //否则其他显示的数字追加到后边
+                    $('#bottom').append(vall);
+                }
+            })
+            //点击c清除
+            $('.clearDisplay').on('click',function(){
+                $('#bottom').text('0');
+            })
+            //点击右边的按钮做个事件代理
+            $('#math').delegate('.math','click',function(){
+                var s=$(this).val();
+                var curnum=$('#bottom').text();
+                if($('.upNum').length!=0  && $('.countSize').length!=0 && $('#bottom').length!=0){
+                    var curS=$('.countSize').text();
+                    var n1=$('.upNum').text();
+                    var n2=$('#bottom').text();
+                    var result=count[curS](n1,n2);
+                    $('.upNum').text(result);
+                    $('.countSize').text(s);
+                    $('#bottom').empty();
+                }else{
+                    $('#top').html("<span class='upNum'>"+curnum+"</span><span class='countSize'>"+s+"</span>");
+                    $('#bottom').text("0");
+                }
+            //点击等于计算
+                $('#equal').on('click',function(){
+                    var curS=$('.countSize').text();
+                    var n1=$('.upNum').text();
+                    var n2=$('#bottom').text();
+                    var result=count[curS](n1,n2);                          
+                    $('#bottom').text(result);
+                    $('#top').empty();                                      
+                })              
+            })
+            var count={
+                "+":function(n1,n2){return n1*1+n2*1},
+                "-":function(n1,n2){return n1-n2},
+                "*":function(n1,n2){return n1*n2},
+                "/":function(n1,n2){return n1/n2}
+            }
+        })
+    </script>
+</body>
+</html>
